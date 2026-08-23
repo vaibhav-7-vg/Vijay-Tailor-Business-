@@ -2879,8 +2879,154 @@ document.getElementById(
 updateDashboard();
 
 calculate();
+  
+/* =========================
+   BACKUP DATA
+========================= */
 
+function backupData(){
+
+  const backup = {
+    app: "Vijay Tailor's",
+    version: 1,
+    backupDate: new Date().toISOString(),
+    orders: orders
+  };
+
+  const data =
+    JSON.stringify(
+      backup,
+      null,
+      2
+    );
+
+  const blob =
+    new Blob(
+      [data],
+      {
+        type: "application/json"
+      }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  const date =
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+  a.href = url;
+
+  a.download =
+    "Vijay-Tailors-Backup-" +
+    date +
+    ".json";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+  alert(
+    "✅ Backup downloaded successfully!"
+  );
+
+}
+
+
+/* =========================
+   RESTORE DATA
+========================= */
+
+function restoreData(event){
+
+  const file =
+    event.target.files[0];
+
+  if(!file){
+    return;
+  }
+
+  const confirmed =
+    confirm(
+      "⚠️ RESTORE BACKUP\n\n" +
+      "Restoring this backup will replace " +
+      "the current orders on this browser.\n\n" +
+      "Make sure you have a backup of your current data first.\n\n" +
+      "Continue?"
+    );
+
+  if(!confirmed){
+
+    event.target.value = "";
+
+    return;
+
+  }
+
+  const reader =
+    new FileReader();
+
+  reader.onload =
+    function(e){
+
+      try{
+
+        const backup =
+          JSON.parse(
+            e.target.result
+          );
+
+        if(
+          !backup.orders ||
+          !Array.isArray(backup.orders)
+        ){
+
+          alert(
+            "❌ Invalid Vijay Tailor's backup file."
+          );
+
+          return;
+
+        }
+
+        orders =
+          backup.orders;
+
+        saveData();
+
+        updateDashboard();
+
+        displayOrders();
+
+        alert(
+          "✅ Backup restored successfully!\n\n" +
+          orders.length +
+          " orders restored."
+        );
+
+      }catch(error){
+
+        alert(
+          "❌ Could not read the backup file."
+        );
+
+        console.error(error);
+
+      }
+
+    };
+
+  reader.readAsText(file);
+
+  event.target.value = "";
+
+      }
 </script>
+  
 
 
 
