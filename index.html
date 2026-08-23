@@ -1437,58 +1437,90 @@ function markReady(id){
 function markCollected(id){
 
   const order =
-    orders.find(
-      order => order.id === id
-    );
-
+    orders.find(order => order.id === id);
 
   if(!order) return;
 
 
+  // Check remaining payment
   if(order.remaining > 0){
 
-    const paid =
-      confirm(
-        "Remaining ₹" +
-        order.remaining +
-        " received?"
-      );
-
+    const paid = confirm(
+      "Remaining ₹" +
+      order.remaining +
+      " received?"
+    );
 
     if(!paid){
       return;
     }
 
-
-    order.advance =
-      order.total;
-
+    order.advance = order.total;
     order.remaining = 0;
-
     order.payment = "PAID";
-
   }
 
 
+  // Change status
   order.status = "Collected";
-
 
   order.collectedAt =
     new Date().toLocaleString();
 
 
+  // Save changes
   saveData();
-
-  displayOrders();
 
   updateDashboard();
 
+  displayOrders();
 
-  alert(
-    "Order marked as collected."
-  );
 
-}
+  // Prepare WhatsApp message
+  let message =
+    "🧵 *VIJAY TAILOR'S*%0A%0A";
+
+  message +=
+    "Hello " +
+    encodeURIComponent(order.name) +
+    ",%0A%0A";
+
+  message +=
+    "📦 *Your order has been collected successfully.*%0A%0A";
+
+  message +=
+    "Order ID: " +
+    encodeURIComponent(order.id) +
+    "%0A";
+
+  message +=
+    "Thank you for choosing Vijay Tailor's! ❤️%0A%0A";
+
+  message +=
+    "We look forward to serving you again. 😊";
+
+
+  // Customer mobile number
+  let number =
+    order.mobile.replace(/\D/g,"");
+
+
+  if(number.length === 10){
+    number = "91" + number;
+  }
+
+
+  // Open WhatsApp
+  const url =
+    "https://wa.me/" +
+    number +
+    "?text=" +
+    message;
+
+
+  window.open(url,"_blank");
+
+  }
 
 
 /* =========================
