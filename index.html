@@ -317,6 +317,36 @@ textarea{
 <button class="blue" onclick="openPage('orders')">
 📋 ALL ORDERS
 </button>
+  <div class="section">
+
+  <h2>💾 Data Backup</h2>
+
+  <p>
+    Keep a backup of all customer orders.
+  </p>
+
+  <button
+    class="blue"
+    onclick="backupData()">
+    💾 BACKUP DATA
+  </button>
+
+  <br><br>
+
+  <button
+    class="green"
+    onclick="document.getElementById('restoreFile').click()">
+    📥 RESTORE DATA
+  </button>
+
+  <input
+    type="file"
+    id="restoreFile"
+    accept=".json"
+    style="display:none"
+    onchange="restoreData(event)">
+
+  </div>
 
 </div>
 
