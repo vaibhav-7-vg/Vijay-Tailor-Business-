@@ -345,122 +345,209 @@ placeholder="10 digit mobile number">
 <h3>👔 Select Services</h3>
 
 
+<!-- SHIRT -->
+
 <div class="service">
 
-<strong>Shirt Stitching</strong>
+<div class="service-name">
+👔 Shirt Stitching
+</div>
 
-<div class="service-grid">
+<div class="service-price">
+₹349 per shirt
+</div>
 
-<input
+<div class="qty-box">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('shirt',-1)">
+−
+</button>
+
+<span
 id="shirtQty"
-type="number"
-min="0"
-value="0"
-placeholder="Quantity">
+class="qty-number">
+0
+</span>
 
-<input
-id="shirtPrice"
-type="number"
-value="349">
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('shirt',1)">
++
+</button>
 
 </div>
 
+<div id="shirtMeasurements"></div>
+
 </div>
 
+
+<!-- PANT -->
 
 <div class="service">
 
-<strong>Pant Stitching</strong>
+<div class="service-name">
+👖 Pant Stitching
+</div>
 
-<div class="service-grid">
+<div class="service-price">
+₹349 per pant
+</div>
 
-<input
+<div class="qty-box">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('pant',-1)">
+−
+</button>
+
+<span
 id="pantQty"
-type="number"
-min="0"
-value="0"
-placeholder="Quantity">
+class="qty-number">
+0
+</span>
 
-<input
-id="pantPrice"
-type="number"
-value="349">
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('pant',1)">
++
+</button>
 
 </div>
 
+<div id="pantMeasurements"></div>
+
 </div>
 
+
+<!-- SCHOOL -->
 
 <div class="service">
 
-<strong>School Uniform</strong>
+<div class="service-name">
+🏫 School Uniform
+</div>
 
-<div class="service-grid">
+<div class="service-price">
+₹699 per set
+</div>
 
-<input
+<div class="qty-box">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('school',-1)">
+−
+</button>
+
+<span
 id="schoolQty"
-type="number"
-min="0"
-value="0"
-placeholder="Quantity">
+class="qty-number">
+0
+</span>
 
-<input
-id="schoolPrice"
-type="number"
-value="699">
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('school',1)">
++
+</button>
 
 </div>
 
+<div id="schoolMeasurements"></div>
+
 </div>
 
+
+<!-- OFFICE -->
 
 <div class="service">
 
-<strong>Office Uniform</strong>
+<div class="service-name">
+🏢 Office Uniform
+</div>
 
-<div class="service-grid">
+<div class="service-price">
+₹699 per set
+</div>
 
-<input
+<div class="qty-box">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('office',-1)">
+−
+</button>
+
+<span
 id="officeQty"
-type="number"
-min="0"
-value="0"
-placeholder="Quantity">
+class="qty-number">
+0
+</span>
 
-<input
-id="officePrice"
-type="number"
-value="699">
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('office',1)">
++
+</button>
 
 </div>
 
+<div id="officeMeasurements"></div>
+
 </div>
 
+
+<!-- KURTA -->
 
 <div class="service">
 
-<strong>Kurta Pajama</strong>
+<div class="service-name">
+🥻 Kurta Pajama
+</div>
 
-<div class="service-grid">
+<div class="service-price">
+₹699 per set
+</div>
 
-<input
+<div class="qty-box">
+
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('kurta',-1)">
+−
+</button>
+
+<span
 id="kurtaQty"
-type="number"
-min="0"
-value="0"
-placeholder="Quantity">
+class="qty-number">
+0
+</span>
 
-<input
-id="kurtaPrice"
-type="number"
-value="699">
+<button
+type="button"
+class="qty-btn"
+onclick="changeQty('kurta',1)">
++
+</button>
 
 </div>
 
+<div id="kurtaMeasurements"></div>
+
 </div>
-
-
-<h3>💰 Payment</h3>
 
 <label>Advance Payment</label>
 
@@ -553,747 +640,1098 @@ oninput="displayOrders()">
 </div>
 
 
+
 <script>
 
 let orders =
 JSON.parse(localStorage.getItem("vijayTailorOrders")) || [];
 
 
-/* PAGE CONTROL */
-
-function openPage(page){
-
-document.getElementById("dashboard")
-.classList.add("hidden");
-
-document.getElementById("newOrder")
-.classList.add("hidden");
-
-document.getElementById("orders")
-.classList.add("hidden");
-
-document.getElementById(page)
-.classList.remove("hidden");
-
-window.scrollTo(0,0);
-
-if(page==="orders"){
-displayOrders();
-}
-
-}
-
-
-/* CALCULATE BILL */
-
-function calculate(){
-
-let products=[
-
-["shirtQty","shirtPrice"],
-
-["pantQty","pantPrice"],
-
-["schoolQty","schoolPrice"],
-
-["officeQty","officePrice"],
-
-["kurtaQty","kurtaPrice"]
-
-];
-
-let total=0;
-
-products.forEach(product=>{
-
-let qty=
-Number(document.getElementById(product[0]).value)||0;
-
-let price=
-Number(document.getElementById(product[1]).value)||0;
-
-total += qty*price;
-
-});
-
-
-let advance=
-Number(document.getElementById("advance").value)||0;
-
-
-if(advance>total){
-
-advance=total;
-
-document.getElementById("advance").value=total;
-
-}
-
-
-let remaining=
-total-advance;
-
-
-document.getElementById("totalAmount")
-.innerText=total;
-
-document.getElementById("advanceAmount")
-.innerText=advance;
-
-document.getElementById("remainingAmount")
-.innerText=remaining;
-
-}
-
-
-document.querySelectorAll(
-'#newOrder input[type="number"]'
-).forEach(input=>{
-
-input.addEventListener(
-"input",
-calculate
-);
-
-});
-
-
-/* SAVE ORDER */
-
-function saveOrder(){
-
-let name=
-document.getElementById("customerName")
-.value.trim();
-
-let mobile=
-document.getElementById("customerMobile")
-.value.trim();
-
-
-if(name===""){
-
-alert("Please enter customer name.");
-
-return;
-
-}
-
-
-if(mobile===""){
-
-alert("Please enter mobile number.");
-
-return;
-
-}
-
-
-calculate();
-
-
-let total=
-Number(document.getElementById("totalAmount").innerText);
-
-let advance=
-Number(document.getElementById("advance").value)||0;
-
-let remaining=
-total-advance;
-
-
-if(total<=0){
-
-alert("Please select at least one service.");
-
-return;
-
-}
-
-
-let services=[];
-
-
-let data=[
-
-["shirtQty","shirtPrice","Shirt Stitching"],
-
-["pantQty","pantPrice","Pant Stitching"],
-
-["schoolQty","schoolPrice","School Uniform"],
-
-["officeQty","officePrice","Office Uniform"],
-
-["kurtaQty","kurtaPrice","Kurta Pajama"]
-
-];
-
-
-data.forEach(item=>{
-
-let qty=
-Number(document.getElementById(item[0]).value)||0;
-
-let price=
-Number(document.getElementById(item[1]).value)||0;
-
-
-if(qty>0){
-
-services.push({
-
-name:item[2],
-
-quantity:qty,
-
-price:price,
-
-total:qty*price
-
-});
-
-}
-
-});
-
-
-let orderNumber=
-"VT-"+String(orders.length+1)
-.padStart(4,"0");
-
-
-let order={
-
-id:orderNumber,
-
-name:name,
-
-mobile:mobile,
-
-services:services,
-
-total:total,
-
-advance:advance,
-
-remaining:remaining,
-
-delivery:
-document.getElementById("deliveryDate").value,
-
-notes:
-document.getElementById("notes").value.trim(),
-
-status:"Pending",
-
-payment:
-remaining===0?"PAID":"PARTIAL",
-
-created:new Date().toLocaleString(),
-
-collectedAt:""
+/* =========================
+   SERVICE DATA
+========================= */
+
+const serviceData = {
+
+  shirt: {
+    name: "Shirt Stitching",
+    price: 349
+  },
+
+  pant: {
+    name: "Pant Stitching",
+    price: 349
+  },
+
+  school: {
+    name: "School Uniform",
+    price: 699
+  },
+
+  office: {
+    name: "Office Uniform",
+    price: 699
+  },
+
+  kurta: {
+    name: "Kurta Pajama",
+    price: 699
+  }
 
 };
 
 
-orders.push(order);
+let quantities = {
+  shirt: 0,
+  pant: 0,
+  school: 0,
+  office: 0,
+  kurta: 0
+};
 
 
-localStorage.setItem(
-"vijayTailorOrders",
-JSON.stringify(orders)
-);
+/* =========================
+   PAGE CONTROL
+========================= */
 
+function openPage(page){
 
-alert(
-"Order saved successfully!\n\n"+
-"Order ID: "+orderNumber
-);
+  document.getElementById("dashboard")
+    .classList.add("hidden");
 
+  document.getElementById("newOrder")
+    .classList.add("hidden");
 
-resetForm();
+  document.getElementById("orders")
+    .classList.add("hidden");
 
-updateDashboard();
+  document.getElementById(page)
+    .classList.remove("hidden");
 
-openPage("orders");
+  window.scrollTo(0,0);
+
+  if(page === "orders"){
+    displayOrders();
+  }
 
 }
 
 
-/* RESET FORM */
+/* =========================
+   QUANTITY + / -
+========================= */
+
+function changeQty(item, amount){
+
+  quantities[item] += amount;
+
+  if(quantities[item] < 0){
+    quantities[item] = 0;
+  }
+
+  document.getElementById(item + "Qty")
+    .innerText = quantities[item];
+
+  createMeasurementBoxes(item);
+
+  calculate();
+
+}
+
+
+/* =========================
+   MEASUREMENT BOXES
+========================= */
+
+function createMeasurementBoxes(item){
+
+  const container =
+    document.getElementById(item + "Measurements");
+
+  container.innerHTML = "";
+
+  const quantity = quantities[item];
+
+  for(let i = 1; i <= quantity; i++){
+
+    const textarea =
+      document.createElement("textarea");
+
+    textarea.className =
+      "measurement-box";
+
+    textarea.id =
+      item + "Measurement" + i;
+
+    textarea.placeholder =
+      "Measurement " + i +
+      "\nExample: Length 28, Chest 40, Shoulder 17, Sleeve 24";
+
+    container.appendChild(textarea);
+
+  }
+
+}
+
+
+/* =========================
+   CALCULATE TOTAL
+========================= */
+
+function calculate(){
+
+  let total = 0;
+
+  for(let item in quantities){
+
+    const quantity =
+      quantities[item];
+
+    const price =
+      serviceData[item].price;
+
+    total += quantity * price;
+
+  }
+
+
+  let advance =
+    Number(
+      document.getElementById("advance").value
+    ) || 0;
+
+
+  if(advance > total){
+
+    advance = total;
+
+    document.getElementById("advance").value =
+      total;
+
+  }
+
+
+  const remaining =
+    total - advance;
+
+
+  document.getElementById("totalAmount")
+    .innerText = total;
+
+  document.getElementById("advanceAmount")
+    .innerText = advance;
+
+  document.getElementById("remainingAmount")
+    .innerText = remaining;
+
+}
+
+
+/* =========================
+   ADVANCE PAYMENT
+========================= */
+
+document.getElementById("advance")
+.addEventListener("input", calculate);
+
+
+/* =========================
+   GET MEASUREMENTS
+========================= */
+
+function getMeasurements(item){
+
+  let measurements = [];
+
+  for(let i = 1; i <= quantities[item]; i++){
+
+    const box =
+      document.getElementById(
+        item + "Measurement" + i
+      );
+
+    measurements.push(
+      box ? box.value.trim() : ""
+    );
+
+  }
+
+  return measurements;
+
+}
+
+
+/* =========================
+   SAVE ORDER
+========================= */
+
+function saveOrder(){
+
+  const name =
+    document.getElementById("customerName")
+      .value.trim();
+
+  const mobile =
+    document.getElementById("customerMobile")
+      .value.trim();
+
+
+  if(name === ""){
+
+    alert("Please enter customer name.");
+
+    return;
+
+  }
+
+
+  if(mobile === ""){
+
+    alert("Please enter mobile number.");
+
+    return;
+
+  }
+
+
+  calculate();
+
+
+  const total =
+    Number(
+      document.getElementById("totalAmount")
+        .innerText
+    );
+
+
+  const advance =
+    Number(
+      document.getElementById("advance")
+        .value
+    ) || 0;
+
+
+  const remaining =
+    total - advance;
+
+
+  if(total <= 0){
+
+    alert(
+      "Please select at least one service."
+    );
+
+    return;
+
+  }
+
+
+  /* SERVICES */
+
+  let services = [];
+
+
+  for(let item in quantities){
+
+    const quantity =
+      quantities[item];
+
+
+    if(quantity > 0){
+
+      services.push({
+
+        name:
+          serviceData[item].name,
+
+        quantity:
+          quantity,
+
+        price:
+          serviceData[item].price,
+
+        total:
+          quantity *
+          serviceData[item].price,
+
+        measurements:
+          getMeasurements(item)
+
+      });
+
+    }
+
+  }
+
+
+  /* ORDER ID */
+
+  const orderNumber =
+    "VT-" +
+    String(orders.length + 1)
+      .padStart(4,"0");
+
+
+  /* ORDER OBJECT */
+
+  const order = {
+
+    id: orderNumber,
+
+    name: name,
+
+    mobile: mobile,
+
+    services: services,
+
+    total: total,
+
+    advance: advance,
+
+    remaining: remaining,
+
+    delivery:
+      document.getElementById(
+        "deliveryDate"
+      ).value,
+
+    notes:
+      document.getElementById(
+        "notes"
+      ).value.trim(),
+
+    status: "Pending",
+
+    payment:
+      remaining === 0
+        ? "PAID"
+        : "PARTIAL",
+
+    created:
+      new Date().toLocaleString(),
+
+    collectedAt: ""
+
+  };
+
+
+  orders.push(order);
+
+
+  saveData();
+
+
+  alert(
+    "Order saved successfully!\n\n" +
+    "Order ID: " +
+    orderNumber
+  );
+
+
+  resetForm();
+
+  updateDashboard();
+
+  openPage("orders");
+
+}
+
+
+/* =========================
+   RESET FORM
+========================= */
 
 function resetForm(){
 
-document.getElementById("customerName").value="";
+  document.getElementById(
+    "customerName"
+  ).value = "";
 
-document.getElementById("customerMobile").value="";
+  document.getElementById(
+    "customerMobile"
+  ).value = "";
 
-document.getElementById("advance").value=0;
+  document.getElementById(
+    "advance"
+  ).value = 0;
 
-document.getElementById("deliveryDate").value="";
+  document.getElementById(
+    "deliveryDate"
+  ).value = "";
 
-document.getElementById("notes").value="";
+  document.getElementById(
+    "notes"
+  ).value = "";
 
-document.getElementById("samplePhotos").value="";
+  document.getElementById(
+    "samplePhotos"
+  ).value = "";
 
-document.getElementById("photoPreview").innerHTML="";
-
-
-[
-"shirtQty",
-"pantQty",
-"schoolQty",
-"officeQty",
-"kurtaQty"
-].forEach(id=>{
-
-document.getElementById(id).value=0;
-
-});
+  document.getElementById(
+    "photoPreview"
+  ).innerHTML = "";
 
 
-calculate();
+  for(let item in quantities){
+
+    quantities[item] = 0;
+
+    document.getElementById(
+      item + "Qty"
+    ).innerText = 0;
+
+    document.getElementById(
+      item + "Measurements"
+    ).innerHTML = "";
+
+  }
+
+
+  calculate();
 
 }
 
 
-/* DISPLAY ORDERS */
+/* =========================
+   DISPLAY ORDERS
+========================= */
 
 function displayOrders(){
 
-let list=
-document.getElementById("orderList");
-
-let search=
-document.getElementById("search")
-.value
-.toLowerCase();
+  const list =
+    document.getElementById(
+      "orderList"
+    );
 
 
-let filtered=
-orders.filter(order=>
-
-order.name.toLowerCase()
-.includes(search)
-
-||
-
-order.mobile.includes(search)
-
-||
-
-order.id.toLowerCase()
-.includes(search)
-
-);
+  const search =
+    document.getElementById(
+      "search"
+    ).value.toLowerCase();
 
 
-if(filtered.length===0){
+  const filtered =
+    orders.filter(order =>
 
-list.innerHTML=
-"<p>No orders found.</p>";
+      order.name
+        .toLowerCase()
+        .includes(search)
 
-return;
+      ||
+
+      order.mobile
+        .includes(search)
+
+      ||
+
+      order.id
+        .toLowerCase()
+        .includes(search)
+
+    );
+
+
+  if(filtered.length === 0){
+
+    list.innerHTML =
+      "<p>No orders found.</p>";
+
+    return;
+
+  }
+
+
+  list.innerHTML = "";
+
+
+  filtered
+    .slice()
+    .reverse()
+    .forEach(order => {
+
+
+      const services =
+        order.services
+          .map(service =>
+
+            service.name +
+            " × " +
+            service.quantity
+
+          )
+          .join(", ");
+
+
+      let statusClass =
+        "pending";
+
+
+      if(order.status === "Ready"){
+        statusClass = "ready";
+      }
+
+
+      if(order.status === "Collected"){
+        statusClass = "collected";
+      }
+
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className = "order";
+
+
+      div.innerHTML = `
+
+        <strong>${order.id}</strong>
+
+        <span class="status ${statusClass}">
+          ${order.status}
+        </span>
+
+        <p>
+
+        👤 ${order.name}<br>
+
+        📱 ${order.mobile}<br>
+
+        👔 ${services}
+
+        </p>
+
+
+        <p>
+
+        💰 Total:
+        <strong>₹${order.total}</strong>
+
+        <br>
+
+        Advance:
+        ₹${order.advance}
+
+        <br>
+
+        Remaining:
+        <strong>₹${order.remaining}</strong>
+
+        </p>
+
+
+        <p>
+
+        📅 Delivery:
+        ${order.delivery || "Not set"}
+
+        </p>
+
+
+        <button
+          class="blue"
+          onclick="sendWhatsApp('${order.id}')">
+
+          📲 SEND BILL ON WHATSAPP
+
+        </button>
+
+
+        ${
+          order.status === "Pending"
+
+          ?
+
+          `
+
+          <button
+            class="green"
+            onclick="markReady('${order.id}')">
+
+            🟢 MARK READY
+
+          </button>
+
+          `
+
+          :
+
+          ""
+
+        }
+
+
+        ${
+          order.status === "Ready"
+
+          ?
+
+          `
+
+          <button
+            class="blue"
+            onclick="markCollected('${order.id}')">
+
+            📦 CUSTOMER COLLECTED
+
+          </button>
+
+          `
+
+          :
+
+          ""
+
+        }
+
+
+        <button
+          onclick="showMeasurements('${order.id}')">
+
+          📏 VIEW MEASUREMENTS
+
+        </button>
+
+      `;
+
+
+      list.appendChild(div);
+
+    });
 
 }
 
 
-list.innerHTML="";
+/* =========================
+   VIEW MEASUREMENTS
+========================= */
+
+function showMeasurements(id){
+
+  const order =
+    orders.find(
+      order => order.id === id
+    );
 
 
-filtered
-.slice()
-.reverse()
-.forEach(order=>{
+  if(!order) return;
 
 
-let services=
-order.services
-.map(service=>
-service.name+
-" × "+
-service.quantity
-)
-.join(", ");
+  let text =
+    "📏 MEASUREMENTS\n\n";
 
 
-let statusClass=
-order.status==="Pending"
-?"pending"
-:
-order.status==="Ready"
-?"ready"
-:"collected";
+  order.services.forEach(service => {
+
+    text +=
+      "👔 " +
+      service.name +
+      "\n";
 
 
-let div=
-document.createElement("div");
+    service.measurements
+      .forEach((measurement,index) => {
 
-div.className="order";
+        text +=
+          "\nItem " +
+          (index + 1) +
+          ":\n" +
+          (measurement ||
+            "No measurement added.") +
+          "\n";
 
-
-div.innerHTML=`
-
-<strong>${order.id}</strong>
-
-<span class="status ${statusClass}">
-${order.status}
-</span>
-
-<p>
-
-👤 ${order.name}<br>
-
-📱 ${order.mobile}<br>
-
-👔 ${services}
-
-</p>
-
-<p>
-
-💰 Total:
-<strong>₹${order.total}</strong><br>
-
-Advance:
-₹${order.advance}<br>
-
-Remaining:
-<strong>₹${order.remaining}</strong>
-
-</p>
-
-<p>
-
-📅 Delivery:
-${order.delivery || "Not set"}
-
-</p>
-
-<button
-class="blue"
-onclick="sendWhatsApp('${order.id}')">
-
-📲 SEND BILL ON WHATSAPP
-
-</button>
-
-${
-order.status==="Pending"
-
-?
-
-`<button
-class="green"
-onclick="markReady('${order.id}')">
-
-🟢 MARK READY
-
-</button>`
-
-:
-
-""
-}
-
-${
-order.status==="Ready"
-
-?
-
-`<button
-class="blue"
-onclick="markCollected('${order.id}')">
-
-📦 CUSTOMER COLLECTED
-
-</button>`
-
-:
-
-""
-}
-
-`;
+      });
 
 
-list.appendChild(div);
+    text += "\n";
 
-});
+  });
+
+
+  alert(text);
 
 }
 
 
-/* MARK READY */
+/* =========================
+   MARK READY
+========================= */
 
 function markReady(id){
 
-let order=
-orders.find(order=>order.id===id);
-
-if(!order)return;
-
-
-order.status="Ready";
+  const order =
+    orders.find(
+      order => order.id === id
+    );
 
 
-saveData();
+  if(!order) return;
 
-displayOrders();
 
-updateDashboard();
+  order.status = "Ready";
+
+
+  saveData();
+
+  displayOrders();
+
+  updateDashboard();
 
 }
 
 
-/* CUSTOMER COLLECTED */
+/* =========================
+   CUSTOMER COLLECTED
+========================= */
 
 function markCollected(id){
 
-let order=
-orders.find(order=>order.id===id);
-
-if(!order)return;
-
-
-if(order.remaining>0){
-
-let paid=
-confirm(
-"Remaining ₹"+
-order.remaining+
-" received?"
-);
+  const order =
+    orders.find(
+      order => order.id === id
+    );
 
 
-if(paid){
+  if(!order) return;
 
-order.advance=order.total;
 
-order.remaining=0;
+  if(order.remaining > 0){
 
-order.payment="PAID";
+    const paid =
+      confirm(
+        "Remaining ₹" +
+        order.remaining +
+        " received?"
+      );
+
+
+    if(!paid){
+      return;
+    }
+
+
+    order.advance =
+      order.total;
+
+    order.remaining = 0;
+
+    order.payment = "PAID";
+
+  }
+
+
+  order.status = "Collected";
+
+
+  order.collectedAt =
+    new Date().toLocaleString();
+
+
+  saveData();
+
+  displayOrders();
+
+  updateDashboard();
+
+
+  alert(
+    "Order marked as collected."
+  );
 
 }
 
-}
 
-
-order.status="Collected";
-
-order.collectedAt=
-new Date().toLocaleString();
-
-
-saveData();
-
-displayOrders();
-
-updateDashboard();
-
-
-alert("Order marked as collected.");
-
-}
-
-
-/* WHATSAPP BILL */
+/* =========================
+   WHATSAPP BILL
+========================= */
 
 function sendWhatsApp(id){
 
-let order=
-orders.find(order=>order.id===id);
-
-if(!order)return;
-
-
-let message=
-"🧵 *VIJAY TAILOR'S*%0A"+
-"*BILL / ORDER*%0A%0A";
+  const order =
+    orders.find(
+      order => order.id === id
+    );
 
 
-message+=
-"Order ID: "+
-encodeURIComponent(order.id)+
-"%0A";
-
-message+=
-"Customer: "+
-encodeURIComponent(order.name)+
-"%0A%0A";
+  if(!order) return;
 
 
-message+="*SERVICES*%0A";
+  let message =
+    "🧵 *VIJAY TAILOR'S*%0A" +
+    "*BILL / ORDER*%0A%0A";
 
 
-order.services.forEach(service=>{
-
-message+=
-encodeURIComponent(service.name)+
-" × "+
-service.quantity+
-" = ₹"+
-service.total+
-"%0A";
-
-});
+  message +=
+    "Order ID: " +
+    encodeURIComponent(order.id) +
+    "%0A";
 
 
-message+=
-"%0A*TOTAL: ₹"+
-order.total+
-"*%0A";
-
-message+=
-"Advance Paid: ₹"+
-order.advance+
-"%0A";
-
-message+=
-"*REMAINING: ₹"+
-order.remaining+
-"*%0A";
+  message +=
+    "Customer: " +
+    encodeURIComponent(order.name) +
+    "%0A%0A";
 
 
-if(order.delivery){
+  message +=
+    "*SERVICES*%0A";
 
-message+=
-"Delivery: "+
-encodeURIComponent(order.delivery)+
-"%0A";
+
+  order.services.forEach(service => {
+
+    message +=
+      encodeURIComponent(
+        service.name
+      ) +
+
+      " × " +
+
+      service.quantity +
+
+      " = ₹" +
+
+      service.total +
+
+      "%0A";
+
+
+    service.measurements
+      .forEach((measurement,index) => {
+
+        if(measurement){
+
+          message +=
+            "📏 Item " +
+            (index + 1) +
+            ": " +
+            encodeURIComponent(
+              measurement
+            ) +
+            "%0A";
+
+        }
+
+      });
+
+  });
+
+
+  message +=
+    "%0A*TOTAL: ₹" +
+    order.total +
+    "*%0A";
+
+
+  message +=
+    "Advance Paid: ₹" +
+    order.advance +
+    "%0A";
+
+
+  message +=
+    "*REMAINING: ₹" +
+    order.remaining +
+    "*%0A";
+
+
+  if(order.delivery){
+
+    message +=
+      "Delivery: " +
+      encodeURIComponent(
+        order.delivery
+      ) +
+      "%0A";
+
+  }
+
+
+  if(order.notes){
+
+    message +=
+      "%0A📝 " +
+      encodeURIComponent(
+        order.notes
+      ) +
+      "%0A";
+
+  }
+
+
+  message +=
+    "%0AThank you for choosing Vijay Tailor's! ❤️";
+
+
+  let number =
+    order.mobile.replace(
+      /\D/g,
+      ""
+    );
+
+
+  if(number.length === 10){
+
+    number = "91" + number;
+
+  }
+
+
+  const url =
+    "https://wa.me/" +
+    number +
+    "?text=" +
+    message;
+
+
+  window.open(
+    url,
+    "_blank"
+  );
 
 }
 
 
-if(order.notes){
-
-message+=
-"%0A📝 "+
-encodeURIComponent(order.notes)+
-"%0A";
-
-}
-
-
-message+=
-"%0AThank you for choosing Vijay Tailor's! ❤️";
-
-
-let number=
-order.mobile.replace(/\D/g,"");
-
-
-if(number.length===10){
-
-number="91"+number;
-
-}
-
-
-let url=
-"https://wa.me/"+
-number+
-"?text="+
-message;
-
-
-window.open(url,"_blank");
-
-}
-
-
-/* SAVE DATA */
+/* =========================
+   SAVE DATA
+========================= */
 
 function saveData(){
 
-localStorage.setItem(
-"vijayTailorOrders",
-JSON.stringify(orders)
-);
+  localStorage.setItem(
+    "vijayTailorOrders",
+    JSON.stringify(orders)
+  );
 
 }
 
 
-/* DASHBOARD */
+/* =========================
+   DASHBOARD
+========================= */
 
 function updateDashboard(){
 
-document.getElementById("totalOrders")
-.innerText=orders.length;
+  document.getElementById(
+    "totalOrders"
+  ).innerText =
+    orders.length;
 
 
-let sales=
-orders.reduce(
-(total,order)=>total+order.total,
-0
-);
+  const sales =
+    orders.reduce(
+      (total,order) =>
+        total + order.total,
+      0
+    );
 
 
-document.getElementById("totalSales")
-.innerText=sales;
+  document.getElementById(
+    "totalSales"
+  ).innerText =
+    sales;
 
 
-document.getElementById("pendingOrders")
-.innerText=
-orders.filter(
-order=>order.status==="Pending"
-).length;
+  document.getElementById(
+    "pendingOrders"
+  ).innerText =
+
+    orders.filter(
+      order =>
+        order.status === "Pending"
+    ).length;
 
 
-document.getElementById("readyOrders")
-.innerText=
-orders.filter(
-order=>order.status==="Ready"
-).length;
+  document.getElementById(
+    "readyOrders"
+  ).innerText =
+
+    orders.filter(
+      order =>
+        order.status === "Ready"
+    ).length;
 
 
-document.getElementById("collectedOrders")
-.innerText=
-orders.filter(
-order=>order.status==="Collected"
-).length;
+  document.getElementById(
+    "collectedOrders"
+  ).innerText =
+
+    orders.filter(
+      order =>
+        order.status === "Collected"
+    ).length;
 
 
-document.getElementById("paymentPending")
-.innerText=
-orders.filter(
-order=>order.remaining>0
-).length;
+  document.getElementById(
+    "paymentPending"
+  ).innerText =
+
+    orders.filter(
+      order =>
+        order.remaining > 0
+    ).length;
 
 }
 
 
-/* PHOTO PREVIEW */
+/* =========================
+   PHOTO PREVIEW
+========================= */
 
-document.getElementById("samplePhotos")
-.addEventListener("change",function(){
+document.getElementById(
+  "samplePhotos"
+)
+.addEventListener(
+  "change",
+  function(){
 
-let preview=
-document.getElementById("photoPreview");
+    const preview =
+      document.getElementById(
+        "photoPreview"
+      );
 
-preview.innerHTML="";
+
+    preview.innerHTML = "";
 
 
-Array.from(this.files).forEach(file=>{
+    Array.from(this.files)
+      .forEach(file => {
 
-let image=
-document.createElement("img");
+        const image =
+          document.createElement(
+            "img"
+          );
 
-image.src=
-URL.createObjectURL(file);
 
-preview.appendChild(image);
+        image.src =
+          URL.createObjectURL(
+            file
+          );
 
-});
 
-});
+        preview.appendChild(
+          image
+        );
 
+      });
+
+  }
+);
+
+
+/* =========================
+   START
+========================= */
 
 updateDashboard();
 
 calculate();
 
 </script>
+
+
+
 
 </body>
   </html>
