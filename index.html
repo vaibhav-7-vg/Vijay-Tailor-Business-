@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vijay Tailor's Management</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f6f8;
+  color:#172033;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  padding-bottom:40px;
+}
+
+.header{
+  background:#172033;
+  color:white;
+  padding:28px 20px;
+  border-radius:0 0 28px 28px;
+}
+
+.header h1{
+  margin:0;
+  font-size:26px;
+}
+
+.header p{
+  margin:7px 0 0;
+  opacity:.8;
+}
+
+.card{
+  background:white;
+  margin:15px;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 5px 18px #00000012;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.stat{
+  background:#f1f5f9;
+  padding:15px;
+  border-radius:15px;
+}
+
+.stat span{
+  display:block;
+  color:#64748b;
+  font-size:13px;
+}
+
+.stat strong{
+  display:block;
+  font-size:25px;
+  margin-top:5px;
+}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:14px;
+  margin-top:9px;
+  color:white;
+  background:#172033;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.green{
+  background:#16a34a;
+}
+
+.blue{
+  background:#2563eb;
+}
+
+.orange{
+  background:#ea580c;
+}
+
+.hidden{
+  display:none;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  margin-top:12px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px;
+  margin-top:6px;
+  border:2px solid #e2e8f0;
+  border-radius:12px;
+  font-size:16px;
+  font-family:Arial;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.service{
+  background:#f8fafc;
+  padding:12px;
+  border-radius:12px;
+  margin-top:8px;
+}
+
+.service-grid{
+  display:grid;
+  grid-template-columns:1fr 80px;
+  gap:8px;
+}
+
+.summary{
+  background:#f8fafc;
+  padding:15px;
+  border-radius:13px;
+  margin-top:12px;
+  line-height:1.8;
+}
+
+.remaining{
+  font-size:21px;
+  font-weight:bold;
+  color:#dc2626;
+}
+
+.order{
+  border:1px solid #e2e8f0;
+  padding:15px;
+  border-radius:15px;
+  margin-top:10px;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.pending{
+  background:#ffedd5;
+  color:#c2410c;
+}
+
+.ready{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.collected{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.photos{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+
+.photos img{
+  width:75px;
+  height:75px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.small{
+  color:#64748b;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+
+<div class="header">
+
+<h1>🧵 Vijay Tailor's</h1>
+
+<p>Business Management System</p>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="card">
+
+<h2>📊 Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">
+<span>Total Orders</span>
+<strong id="totalOrders">0</strong>
+</div>
+
+<div class="stat">
+<span>Total Sales</span>
+<strong>₹<span id="totalSales">0</span></strong>
+</div>
+
+<div class="stat">
+<span>Pending</span>
+<strong id="pendingOrders">0</strong>
+</div>
+
+<div class="stat">
+<span>Ready</span>
+<strong id="readyOrders">0</strong>
+</div>
+
+<div class="stat">
+<span>Collected</span>
+<strong id="collectedOrders">0</strong>
+</div>
+
+<div class="stat">
+<span>Payment Pending</span>
+<strong id="paymentPending">0</strong>
+</div>
+
+</div>
+
+<button class="green" onclick="openPage('newOrder')">
+➕ NEW ORDER
+</button>
+
+<button class="blue" onclick="openPage('orders')">
+📋 ALL ORDERS
+</button>
+
+</div>
+
+
+<!-- NEW ORDER -->
+
+<div id="newOrder" class="card hidden">
+
+<h2>📝 New Order</h2>
+
+<label>👤 Customer Name</label>
+
+<input
+id="customerName"
+placeholder="Customer name">
+
+
+<label>📱 Mobile Number</label>
+
+<input
+id="customerMobile"
+type="tel"
+placeholder="10 digit mobile number">
+
+
+<h3>👔 Select Services</h3>
+
+
+<div class="service">
+
+<strong>Shirt Stitching</strong>
+
+<div class="service-grid">
+
+<input
+id="shirtQty"
+type="number"
+min="0"
+value="0"
+placeholder="Quantity">
+
+<input
+id="shirtPrice"
+type="number"
+value="349">
+
+</div>
+
+</div>
+
+
+<div class="service">
+
+<strong>Pant Stitching</strong>
+
+<div class="service-grid">
+
+<input
+id="pantQty"
+type="number"
+min="0"
+value="0"
+placeholder="Quantity">
+
+<input
+id="pantPrice"
+type="number"
+value="349">
+
+</div>
+
+</div>
+
+
+<div class="service">
+
+<strong>School Uniform</strong>
+
+<div class="service-grid">
+
+<input
+id="schoolQty"
+type="number"
+min="0"
+value="0"
+placeholder="Quantity">
+
+<input
+id="schoolPrice"
+type="number"
+value="699">
+
+</div>
+
+</div>
+
+
+<div class="service">
+
+<strong>Office Uniform</strong>
+
+<div class="service-grid">
+
+<input
+id="officeQty"
+type="number"
+min="0"
+value="0"
+placeholder="Quantity">
+
+<input
+id="officePrice"
+type="number"
+value="699">
+
+</div>
+
+</div>
+
+
+<div class="service">
+
+<strong>Kurta Pajama</strong>
+
+<div class="service-grid">
+
+<input
+id="kurtaQty"
+type="number"
+min="0"
+value="0"
+placeholder="Quantity">
+
+<input
+id="kurtaPrice"
+type="number"
+value="699">
+
+</div>
+
+</div>
+
+
+<h3>💰 Payment</h3>
+
+<label>Advance Payment</label>
+
+<input
+id="advance"
+type="number"
+min="0"
+value="0">
+
+
+<div class="summary">
+
+<div>
+Total Amount:
+<strong>₹<span id="totalAmount">0</span></strong>
+</div>
+
+<div>
+Advance:
+₹<span id="advanceAmount">0</span>
+</div>
+
+<div class="remaining">
+Remaining:
+₹<span id="remainingAmount">0</span>
+</div>
+
+</div>
+
+
+<h3>📅 Delivery</h3>
+
+<label>Delivery Date</label>
+
+<input
+id="deliveryDate"
+type="date">
+
+
+<h3>📸 Sample / Cloth Photos</h3>
+
+<input
+id="samplePhotos"
+type="file"
+accept="image/*"
+capture="environment"
+multiple>
+
+<div id="photoPreview" class="photos"></div>
+
+
+<h3>📝 Measurements / Instructions</h3>
+
+<textarea
+id="notes"
+placeholder="Collar style, sleeve, fitting, measurements, etc.">
+</textarea>
+
+
+<button class="green" onclick="saveOrder()">
+💾 SAVE ORDER / BILL
+</button>
+
+<button onclick="openPage('dashboard')">
+← BACK
+</button>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div id="orders" class="card hidden">
+
+<h2>📋 Orders</h2>
+
+<input
+id="search"
+placeholder="🔍 Search customer, mobile or order ID"
+oninput="displayOrders()">
+
+<div id="orderList"></div>
+
+<button onclick="openPage('dashboard')">
+← BACK
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+let orders =
+JSON.parse(localStorage.getItem("vijayTailorOrders")) || [];
+
+
+/* PAGE CONTROL */
+
+function openPage(page){
+
+document.getElementById("dashboard")
+.classList.add("hidden");
+
+document.getElementById("newOrder")
+.classList.add("hidden");
+
+document.getElementById("orders")
+.classList.add("hidden");
+
+document.getElementById(page)
+.classList.remove("hidden");
+
+window.scrollTo(0,0);
+
+if(page==="orders"){
+displayOrders();
+}
+
+}
+
+
+/* CALCULATE BILL */
+
+function calculate(){
+
+let products=[
+
+["shirtQty","shirtPrice"],
+
+["pantQty","pantPrice"],
+
+["schoolQty","schoolPrice"],
+
+["officeQty","officePrice"],
+
+["kurtaQty","kurtaPrice"]
+
+];
+
+let total=0;
+
+products.forEach(product=>{
+
+let qty=
+Number(document.getElementById(product[0]).value)||0;
+
+let price=
+Number(document.getElementById(product[1]).value)||0;
+
+total += qty*price;
+
+});
+
+
+let advance=
+Number(document.getElementById("advance").value)||0;
+
+
+if(advance>total){
+
+advance=total;
+
+document.getElementById("advance").value=total;
+
+}
+
+
+let remaining=
+total-advance;
+
+
+document.getElementById("totalAmount")
+.innerText=total;
+
+document.getElementById("advanceAmount")
+.innerText=advance;
+
+document.getElementById("remainingAmount")
+.innerText=remaining;
+
+}
+
+
+document.querySelectorAll(
+'#newOrder input[type="number"]'
+).forEach(input=>{
+
+input.addEventListener(
+"input",
+calculate
+);
+
+});
+
+
+/* SAVE ORDER */
+
+function saveOrder(){
+
+let name=
+document.getElementById("customerName")
+.value.trim();
+
+let mobile=
+document.getElementById("customerMobile")
+.value.trim();
+
+
+if(name===""){
+
+alert("Please enter customer name.");
+
+return;
+
+}
+
+
+if(mobile===""){
+
+alert("Please enter mobile number.");
+
+return;
+
+}
+
+
+calculate();
+
+
+let total=
+Number(document.getElementById("totalAmount").innerText);
+
+let advance=
+Number(document.getElementById("advance").value)||0;
+
+let remaining=
+total-advance;
+
+
+if(total<=0){
+
+alert("Please select at least one service.");
+
+return;
+
+}
+
+
+let services=[];
+
+
+let data=[
+
+["shirtQty","shirtPrice","Shirt Stitching"],
+
+["pantQty","pantPrice","Pant Stitching"],
+
+["schoolQty","schoolPrice","School Uniform"],
+
+["officeQty","officePrice","Office Uniform"],
+
+["kurtaQty","kurtaPrice","Kurta Pajama"]
+
+];
+
+
+data.forEach(item=>{
+
+let qty=
+Number(document.getElementById(item[0]).value)||0;
+
+let price=
+Number(document.getElementById(item[1]).value)||0;
+
+
+if(qty>0){
+
+services.push({
+
+name:item[2],
+
+quantity:qty,
+
+price:price,
+
+total:qty*price
+
+});
+
+}
+
+});
+
+
+let orderNumber=
+"VT-"+String(orders.length+1)
+.padStart(4,"0");
+
+
+let order={
+
+id:orderNumber,
+
+name:name,
+
+mobile:mobile,
+
+services:services,
+
+total:total,
+
+advance:advance,
+
+remaining:remaining,
+
+delivery:
+document.getElementById("deliveryDate").value,
+
+notes:
+document.getElementById("notes").value.trim(),
+
+status:"Pending",
+
+payment:
+remaining===0?"PAID":"PARTIAL",
+
+created:new Date().toLocaleString(),
+
+collectedAt:""
+
+};
+
+
+orders.push(order);
+
+
+localStorage.setItem(
+"vijayTailorOrders",
+JSON.stringify(orders)
+);
+
+
+alert(
+"Order saved successfully!\n\n"+
+"Order ID: "+orderNumber
+);
+
+
+resetForm();
+
+updateDashboard();
+
+openPage("orders");
+
+}
+
+
+/* RESET FORM */
+
+function resetForm(){
+
+document.getElementById("customerName").value="";
+
+document.getElementById("customerMobile").value="";
+
+document.getElementById("advance").value=0;
+
+document.getElementById("deliveryDate").value="";
+
+document.getElementById("notes").value="";
+
+document.getElementById("samplePhotos").value="";
+
+document.getElementById("photoPreview").innerHTML="";
+
+
+[
+"shirtQty",
+"pantQty",
+"schoolQty",
+"officeQty",
+"kurtaQty"
+].forEach(id=>{
+
+document.getElementById(id).value=0;
+
+});
+
+
+calculate();
+
+}
+
+
+/* DISPLAY ORDERS */
+
+function displayOrders(){
+
+let list=
+document.getElementById("orderList");
+
+let search=
+document.getElementById("search")
+.value
+.toLowerCase();
+
+
+let filtered=
+orders.filter(order=>
+
+order.name.toLowerCase()
+.includes(search)
+
+||
+
+order.mobile.includes(search)
+
+||
+
+order.id.toLowerCase()
+.includes(search)
+
+);
+
+
+if(filtered.length===0){
+
+list.innerHTML=
+"<p>No orders found.</p>";
+
+return;
+
+}
+
+
+list.innerHTML="";
+
+
+filtered
+.slice()
+.reverse()
+.forEach(order=>{
+
+
+let services=
+order.services
+.map(service=>
+service.name+
+" × "+
+service.quantity
+)
+.join(", ");
+
+
+let statusClass=
+order.status==="Pending"
+?"pending"
+:
+order.status==="Ready"
+?"ready"
+:"collected";
+
+
+let div=
+document.createElement("div");
+
+div.className="order";
+
+
+div.innerHTML=`
+
+<strong>${order.id}</strong>
+
+<span class="status ${statusClass}">
+${order.status}
+</span>
+
+<p>
+
+👤 ${order.name}<br>
+
+📱 ${order.mobile}<br>
+
+👔 ${services}
+
+</p>
+
+<p>
+
+💰 Total:
+<strong>₹${order.total}</strong><br>
+
+Advance:
+₹${order.advance}<br>
+
+Remaining:
+<strong>₹${order.remaining}</strong>
+
+</p>
+
+<p>
+
+📅 Delivery:
+${order.delivery || "Not set"}
+
+</p>
+
+<button
+class="blue"
+onclick="sendWhatsApp('${order.id}')">
+
+📲 SEND BILL ON WHATSAPP
+
+</button>
+
+${
+order.status==="Pending"
+
+?
+
+`<button
+class="green"
+onclick="markReady('${order.id}')">
+
+🟢 MARK READY
+
+</button>`
+
+:
+
+""
+}
+
+${
+order.status==="Ready"
+
+?
+
+`<button
+class="blue"
+onclick="markCollected('${order.id}')">
+
+📦 CUSTOMER COLLECTED
+
+</button>`
+
+:
+
+""
+}
+
+`;
+
+
+list.appendChild(div);
+
+});
+
+}
+
+
+/* MARK READY */
+
+function markReady(id){
+
+let order=
+orders.find(order=>order.id===id);
+
+if(!order)return;
+
+
+order.status="Ready";
+
+
+saveData();
+
+displayOrders();
+
+updateDashboard();
+
+}
+
+
+/* CUSTOMER COLLECTED */
+
+function markCollected(id){
+
+let order=
+orders.find(order=>order.id===id);
+
+if(!order)return;
+
+
+if(order.remaining>0){
+
+let paid=
+confirm(
+"Remaining ₹"+
+order.remaining+
+" received?"
+);
+
+
+if(paid){
+
+order.advance=order.total;
+
+order.remaining=0;
+
+order.payment="PAID";
+
+}
+
+}
+
+
+order.status="Collected";
+
+order.collectedAt=
+new Date().toLocaleString();
+
+
+saveData();
+
+displayOrders();
+
+updateDashboard();
+
+
+alert("Order marked as collected.");
+
+}
+
+
+/* WHATSAPP BILL */
+
+function sendWhatsApp(id){
+
+let order=
+orders.find(order=>order.id===id);
+
+if(!order)return;
+
+
+let message=
+"🧵 *VIJAY TAILOR'S*%0A"+
+"*BILL / ORDER*%0A%0A";
+
+
+message+=
+"Order ID: "+
+encodeURIComponent(order.id)+
+"%0A";
+
+message+=
+"Customer: "+
+encodeURIComponent(order.name)+
+"%0A%0A";
+
+
+message+="*SERVICES*%0A";
+
+
+order.services.forEach(service=>{
+
+message+=
+encodeURIComponent(service.name)+
+" × "+
+service.quantity+
+" = ₹"+
+service.total+
+"%0A";
+
+});
+
+
+message+=
+"%0A*TOTAL: ₹"+
+order.total+
+"*%0A";
+
+message+=
+"Advance Paid: ₹"+
+order.advance+
+"%0A";
+
+message+=
+"*REMAINING: ₹"+
+order.remaining+
+"*%0A";
+
+
+if(order.delivery){
+
+message+=
+"Delivery: "+
+encodeURIComponent(order.delivery)+
+"%0A";
+
+}
+
+
+if(order.notes){
+
+message+=
+"%0A📝 "+
+encodeURIComponent(order.notes)+
+"%0A";
+
+}
+
+
+message+=
+"%0AThank you for choosing Vijay Tailor's! ❤️";
+
+
+let number=
+order.mobile.replace(/\D/g,"");
+
+
+if(number.length===10){
+
+number="91"+number;
+
+}
+
+
+let url=
+"https://wa.me/"+
+number+
+"?text="+
+message;
+
+
+window.open(url,"_blank");
+
+}
+
+
+/* SAVE DATA */
+
+function saveData(){
+
+localStorage.setItem(
+"vijayTailorOrders",
+JSON.stringify(orders)
+);
+
+}
+
+
+/* DASHBOARD */
+
+function updateDashboard(){
+
+document.getElementById("totalOrders")
+.innerText=orders.length;
+
+
+let sales=
+orders.reduce(
+(total,order)=>total+order.total,
+0
+);
+
+
+document.getElementById("totalSales")
+.innerText=sales;
+
+
+document.getElementById("pendingOrders")
+.innerText=
+orders.filter(
+order=>order.status==="Pending"
+).length;
+
+
+document.getElementById("readyOrders")
+.innerText=
+orders.filter(
+order=>order.status==="Ready"
+).length;
+
+
+document.getElementById("collectedOrders")
+.innerText=
+orders.filter(
+order=>order.status==="Collected"
+).length;
+
+
+document.getElementById("paymentPending")
+.innerText=
+orders.filter(
+order=>order.remaining>0
+).length;
+
+}
+
+
+/* PHOTO PREVIEW */
+
+document.getElementById("samplePhotos")
+.addEventListener("change",function(){
+
+let preview=
+document.getElementById("photoPreview");
+
+preview.innerHTML="";
+
+
+Array.from(this.files).forEach(file=>{
+
+let image=
+document.createElement("img");
+
+image.src=
+URL.createObjectURL(file);
+
+preview.appendChild(image);
+
+});
+
+});
+
+
+updateDashboard();
+
+calculate();
+
+</script>
+
+</body>
+  </html>
