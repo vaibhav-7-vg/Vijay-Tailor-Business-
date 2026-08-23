@@ -1095,19 +1095,22 @@ function resetForm(){
 /* =========================
    DISPLAY ORDERS
 ========================= */
+/* =========================
+   DISPLAY ORDERS
+========================= */
 
 function displayOrders(){
 
   const list =
-    document.getElementById(
-      "orderList"
-    );
+    document.getElementById("orderList");
 
+  const searchInput =
+    document.getElementById("search");
 
   const search =
-    document.getElementById(
-      "search"
-    ).value.toLowerCase();
+    searchInput
+      ? searchInput.value.toLowerCase().trim()
+      : "";
 
 
   const filtered =
@@ -1149,27 +1152,21 @@ function displayOrders(){
     .reverse()
     .forEach(order => {
 
-
       const services =
         order.services
           .map(service =>
-
             service.name +
             " × " +
             service.quantity
-
           )
           .join(", ");
 
 
-      let statusClass =
-        "pending";
-
+      let statusClass = "pending";
 
       if(order.status === "Ready"){
         statusClass = "ready";
       }
-
 
       if(order.status === "Collected"){
         statusClass = "collected";
@@ -1177,10 +1174,7 @@ function displayOrders(){
 
 
       const div =
-        document.createElement(
-          "div"
-        );
-
+        document.createElement("div");
 
       div.className = "order";
 
@@ -1193,42 +1187,56 @@ function displayOrders(){
           ${order.status}
         </span>
 
+
         <p>
 
-        👤 ${order.name}<br>
+          👤 ${order.name}<br>
 
-        📱 ${order.mobile}<br>
+          📱 ${order.mobile}<br>
 
-        👔 ${services}
+          👔 ${services}
 
         </p>
 
 
         <p>
 
-        💰 Total:
-        <strong>₹${order.total}</strong>
+          💰 Total:
+          <strong>₹${order.total}</strong>
 
-        <br>
+          <br>
 
-        Advance:
-        ₹${order.advance}
+          💵 Advance:
+          ₹${order.advance}
 
-        <br>
+          <br>
 
-        Remaining:
-        <strong>₹${order.remaining}</strong>
+          ${
+            order.remaining > 0
+
+            ?
+
+            `🔴 Remaining:
+             <strong>₹${order.remaining}</strong>`
+
+            :
+
+            `🟢 Payment:
+             <strong>PAID</strong>`
+          }
 
         </p>
 
 
         <p>
 
-        📅 Delivery:
-        ${order.delivery || "Not set"}
+          📅 Delivery:
+          ${order.delivery || "Not set"}
 
         </p>
 
+
+        <!-- WHATSAPP BILL -->
 
         <button
           class="blue"
@@ -1238,6 +1246,19 @@ function displayOrders(){
 
         </button>
 
+
+        <!-- EDIT ORDER -->
+
+        <button
+          class="orange"
+          onclick="editOrder('${order.id}')">
+
+          ✏️ EDIT ORDER
+
+        </button>
+
+
+        <!-- READY -->
 
         ${
           order.status === "Pending"
@@ -1263,6 +1284,8 @@ function displayOrders(){
         }
 
 
+        <!-- COLLECTED -->
+
         ${
           order.status === "Ready"
 
@@ -1287,6 +1310,8 @@ function displayOrders(){
         }
 
 
+        <!-- MEASUREMENTS -->
+
         <button
           onclick="showMeasurements('${order.id}')">
 
@@ -1302,6 +1327,448 @@ function displayOrders(){
     });
 
 }
+
+
+/* =========================
+   EDIT ORDER
+========================= */
+
+function editOrder(id){
+
+  const order =
+    orders.find(
+      order => order.id === id
+    );
+
+
+  if(!order){
+
+    alert("Order not found.");
+
+    return;
+
+  }
+
+
+  /*
+    Save the ID of the order
+    currently being edited.
+  */
+
+  window.editingOrderId = id;
+
+
+  /* CUSTOMER DETAILS */
+
+  document.getElementById(
+    "customerName"
+  ).value = order.name;
+
+
+  document.getElementById(
+    "customerMobile"
+  ).value = order.mobile;
+
+
+  document.getElementById(
+    "advance"
+  ).value = order.advance;
+
+
+  document.getElementById(
+    "deliveryDate"
+  ).value = order.delivery || "";
+
+
+  document.getElementById(
+    "notes"
+  ).value = order.notes || "";
+
+
+  /* RESET SERVICES */
+
+  for(let item in quantities){
+
+    quantities[item] = 0;
+
+
+    const qty =
+      document.getElementById(
+        item + "Qty"
+      );
+
+    if(qty){
+      qty.innerText = "0";
+    }
+
+
+    const measurementBox =
+      document.getElementById(
+        item + "Measurements"
+      );
+
+    if(measurementBox){
+
+      measurementBox.innerHTML = "";
+
+    }
+
+  }
+
+
+  /* RESTORE SERVICES */
+
+  order.services.forEach(service => {
+
+    const item =
+      Object.keys(serviceData)
+        .find(key =>
+          serviceData[key].name === service.name
+        );
+
+
+    if(!item){
+      return;
+    }
+
+
+    quantities[item] =
+      service.quantity;
+
+
+    document.getElementById(
+      item + "Qty"
+    ).innerText =
+      service.quantity;
+
+
+    createMeasurementBoxes(item);
+
+
+    if(service.measurements){
+
+      service.measurements.forEach(
+        (measurement,index) => {
+
+          const box =
+            document.getElementById(
+              item +
+              "Measurement" +
+              (index + 1)
+            );
+
+
+          if(box){
+
+            box.value =
+              measurement || "";
+
+          }
+
+        }
+      );
+
+    }
+
+  });
+
+
+  calculate();
+
+
+  /* OPEN NEW ORDER PAGE */
+
+  openPage("newOrder");
+
+
+  /* CHANGE SAVE BUTTON */
+
+  const saveButton =
+    document.querySelector(
+      'button[onclick="saveOrder()"]'
+    );
+
+
+  if(saveButton){
+
+    saveButton.innerText =
+      "💾 UPDATE ORDER";
+
+
+    saveButton.onclick =
+      function(){
+
+        updateEditedOrder();
+
+      };
+
+  }
+
+}
+
+
+/* =========================
+   UPDATE EDITED ORDER
+========================= */
+
+function updateEditedOrder(){
+
+  const id =
+    window.editingOrderId;
+
+
+  if(!id){
+
+    alert("No order selected for editing.");
+
+    return;
+
+  }
+
+
+  const oldOrder =
+    orders.find(
+      order => order.id === id
+    );
+
+
+  if(!oldOrder){
+
+    alert("Original order not found.");
+
+    return;
+
+  }
+
+
+  /* CUSTOMER DETAILS */
+
+  const name =
+    document.getElementById(
+      "customerName"
+    ).value.trim();
+
+
+  const mobile =
+    document.getElementById(
+      "customerMobile"
+    ).value.trim();
+
+
+  if(name === ""){
+
+    alert(
+      "Please enter customer name."
+    );
+
+    return;
+
+  }
+
+
+  if(mobile === ""){
+
+    alert(
+      "Please enter mobile number."
+    );
+
+    return;
+
+  }
+
+
+  /* CALCULATE */
+
+  calculate();
+
+
+  const total =
+    Number(
+      document.getElementById(
+        "totalAmount"
+      ).innerText
+    );
+
+
+  const advance =
+    Number(
+      document.getElementById(
+        "advance"
+      ).value
+    ) || 0;
+
+
+  if(total <= 0){
+
+    alert(
+      "Please select at least one service."
+    );
+
+    return;
+
+  }
+
+
+  /* SERVICES */
+
+  const services = [];
+
+
+  for(let item in quantities){
+
+    const quantity =
+      quantities[item];
+
+
+    if(quantity > 0){
+
+      services.push({
+
+        name:
+          serviceData[item].name,
+
+        quantity:
+          quantity,
+
+        price:
+          serviceData[item].price,
+
+        total:
+          quantity *
+          serviceData[item].price,
+
+        measurements:
+          getMeasurements(item)
+
+      });
+
+    }
+
+  }
+
+
+  /* REMAINING */
+
+  const remaining =
+    Math.max(
+      0,
+      total - advance
+    );
+
+
+  /* PAYMENT STATUS */
+
+  let payment =
+    "PARTIAL";
+
+
+  if(remaining === 0){
+
+    payment = "PAID";
+
+  }
+
+
+  /*
+    IMPORTANT:
+    Keep the original order status.
+    Example:
+    Pending stays Pending.
+    Ready stays Ready.
+    Collected stays Collected.
+  */
+
+  const updatedOrder = {
+
+    id: oldOrder.id,
+
+    name: name,
+
+    mobile: mobile,
+
+    services: services,
+
+    total: total,
+
+    advance: advance,
+
+    remaining: remaining,
+
+    delivery:
+      document.getElementById(
+        "deliveryDate"
+      ).value,
+
+    notes:
+      document.getElementById(
+        "notes"
+      ).value.trim(),
+
+    status:
+      oldOrder.status,
+
+    payment:
+      payment,
+
+    created:
+      oldOrder.created,
+
+    collectedAt:
+      oldOrder.collectedAt || ""
+
+  };
+
+
+  /*
+    Replace only the edited order.
+    Other orders remain untouched.
+  */
+
+  orders =
+    orders.map(order =>
+
+      order.id === id
+        ? updatedOrder
+        : order
+
+    );
+
+
+  /* SAVE */
+
+  saveData();
+
+
+  /* CLEAR EDIT MODE */
+
+  window.editingOrderId = null;
+
+
+  /* RESET FORM */
+
+  resetForm();
+
+
+  /* UPDATE DASHBOARD */
+
+  updateDashboard();
+
+
+  /* RETURN TO ORDERS */
+
+  openPage("orders");
+
+
+  alert(
+    "Order " +
+    id +
+    " updated successfully! ✅"
+  );
+
+            }
+
+
+              
 
 
 /* =========================
