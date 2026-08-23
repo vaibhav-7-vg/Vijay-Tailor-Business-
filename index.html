@@ -1256,6 +1256,13 @@ function displayOrders(){
           ✏️ EDIT ORDER
 
         </button>
+        <button
+  class="red"
+  onclick="deleteOrder('${order.id}')">
+
+  🗑️ DELETE ORDER
+
+</button>
 
 
         <!-- READY -->
@@ -1766,6 +1773,79 @@ function updateEditedOrder(){
   );
 
             }
+/* =========================
+   DELETE ORDER
+========================= */
+
+function deleteOrder(id){
+
+  const order =
+    orders.find(
+      order => order.id === id
+    );
+
+  if(!order){
+
+    alert("Order not found.");
+
+    return;
+
+  }
+
+
+  const confirmed =
+    confirm(
+      "⚠️ DELETE ORDER\n\n" +
+      "Order ID: " +
+      order.id +
+      "\n" +
+      "Customer: " +
+      order.name +
+      "\n\n" +
+      "This order will be permanently deleted from this browser.\n\n" +
+      "Are you sure?"
+    );
+
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+
+  /* Remove selected order */
+
+  orders =
+    orders.filter(
+      existingOrder =>
+        existingOrder.id !== id
+    );
+
+
+  /* Save */
+
+  saveData();
+
+
+  /* Update dashboard */
+
+  updateDashboard();
+
+
+  /* Refresh orders */
+
+  displayOrders();
+
+
+  alert(
+    "Order " +
+    id +
+    " deleted successfully."
+  );
+
+}
+  
 
 
               
