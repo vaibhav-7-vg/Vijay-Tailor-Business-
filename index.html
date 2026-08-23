@@ -8,7 +8,7 @@
 
 <style>
 *{
-  box-sizing:border-box; 
+  box-sizing:border-box;
 }
 
 body{
@@ -670,6 +670,16 @@ oninput="displayOrders()">
 </div>
 
 
+
+
+  <!-- DELIVERY MANAGEMENT -->
+  <div class="card">
+    <h2>📅 Delivery Management</h2>
+    <h3>🔔 Today's Deliveries</h3>
+    <div id="todayDeliveries">No deliveries for today.</div>
+    <h3>⚠️ Overdue Orders</h3>
+    <div id="overdueDeliveries">No overdue orders. ✅</div>
+  </div>
 
 <script>
 
@@ -1510,46 +1520,40 @@ function editOrder(id){
             box.value =
               measurement || "";
 
-          }
+      }
+    }
+  );
+}
 
-        }
-      );
+});
+
+calculate();
+
+/* OPEN NEW ORDER PAGE */
+
+openPage("newOrder");
+
+/* CHANGE SAVE BUTTON */
+
+const saveButton =
+    document.querySelector(
+        'button[onclick="saveOrder()"]'
+    );
+  
+        if(saveButton){
+
+      saveButton.innerText =
+        "💾 UPDATE ORDER";
+
+
+      saveButton.onclick =
+        function(){
+
+          updateEditedOrder();
+
+        };
 
     }
-
-  });
-
-
-  calculate();
-
-
-  /* OPEN NEW ORDER PAGE */
-
-  openPage("newOrder");
-
-
-  /* CHANGE SAVE BUTTON */
-
-  const saveButton =
-    document.querySelector(
-      'button[onclick="saveOrder()"]'
-    );
-
-
-  if(saveButton){
-
-    saveButton.innerText =
-      "💾 UPDATE ORDER";
-
-
-    saveButton.onclick =
-      function(){
-
-        updateEditedOrder();
-
-      };
-
-  }
 
 }
 
@@ -1812,7 +1816,9 @@ function updateEditedOrder(){
     " updated successfully! ✅"
   );
 
-            }
+}
+
+
 /* =========================
    DELETE ORDER
 ========================= */
@@ -1823,6 +1829,7 @@ function deleteOrder(id){
     orders.find(
       order => order.id === id
     );
+
 
   if(!order){
 
@@ -1885,7 +1892,7 @@ function deleteOrder(id){
   );
 
 }
-  
+
 
 /* =========================
    PROFESSIONAL BILL
@@ -1897,6 +1904,7 @@ function viewBill(id){
     orders.find(
       order => order.id === id
     );
+
 
   if(!order){
 
@@ -2372,11 +2380,8 @@ button{
 
   billWindow.document.close();
 
-}
-              
-
-
-/* =========================
+  }      
+  /* =========================
    VIEW MEASUREMENTS
 ========================= */
 
@@ -2430,6 +2435,7 @@ function showMeasurements(id){
 /* =========================
    MARK READY
 ========================= */
+
 function markReady(id){
 
   const order =
@@ -2445,8 +2451,10 @@ function markReady(id){
   // Save updated order
   saveData();
 
+
   // Update dashboard
   updateDashboard();
+
 
   // Refresh order list
   displayOrders();
@@ -2544,6 +2552,7 @@ function markCollected(id){
   saveData();
 
   updateDashboard();
+  updateDeliveryManagement();
 
   displayOrders();
 
@@ -2592,7 +2601,7 @@ function markCollected(id){
 
   window.open(url,"_blank");
 
-  }
+}
 
 
 /* =========================
@@ -2742,10 +2751,9 @@ function sendWhatsApp(id){
     "_blank"
   );
 
-}
-
-
-/* =========================
+  }
+  
+  /* =========================
    SAVE DATA
 ========================= */
 
@@ -2873,43 +2881,78 @@ document.getElementById(
 
 
 /* =========================
+   DELIVERY MANAGEMENT
+========================= */
+
+function updateDeliveryManagement(){
+
+  const todayEl =
+    document.getElementById(
+      "todayDeliveries"
+    );
+
+  const overdueEl =
+    document.getElementById(
+      "overdueDeliveries"
+    );
+
+
+  if(!todayEl || !overdueEl) return;
+
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+
+  const todayOrders =
+    orders.filter(order =>
+      order.delivery === today &&
+      order.status !== "Collected"
+    );
+
+
+  const overdueOrders =
+    orders.filter(order =>
+      order.delivery &&
+      order.delivery < today &&
+      order.status !== "Collected"
+    );
+
+
+  todayEl.innerHTML =
+    todayOrders.length
+      ? todayOrders.map(order =>
+          `<div class="order"><strong>${order.id}</strong><br>
+           👤 ${order.name}<br>📱 ${order.mobile}<br>
+           Status: ${order.status}</div>`
+        ).join("")
+      : "No deliveries for today.";
+
+
+  overdueEl.innerHTML =
+    overdueOrders.length
+      ? overdueOrders.map(order =>
+          `<div class="order"><strong>${order.id}</strong><br>
+           👤 ${order.name}<br>📅 Due: ${order.delivery}<br>
+           Status: ${order.status}</div>`
+        ).join("")
+      : "No overdue orders. ✅";
+
+}
+
+
+/* =========================
    START
 ========================= */
 
 updateDashboard();
+updateDeliveryManagement();
 
 calculate();
-  <!-- DELIVERY MANAGEMENT -->
-
-<div class="section">
-
-  <h2>📅 Delivery Management</h2>
-
-  <h3>🔔 Today's Deliveries</h3>
-
-  <div id="todayDeliveries">
-    No deliveries for today.
-  </div>
-
-  <h3>⚠️ Overdue Orders</h3>
-
-  <div id="overdueDeliveries">
-    No overdue orders. ✅
-  </div>
-
-</div>
 
 
-<!-- DATA BACKUP -->
-
-<div class="section">
-
-  ...
-  💾 BACKUP DATA
-  📥 RESTORE DATA
-
-</div>
-  
 /* =========================
    BACKUP DATA
 ========================= */
@@ -2917,11 +2960,18 @@ calculate();
 function backupData(){
 
   const backup = {
+
     app: "Vijay Tailor's",
+
     version: 1,
-    backupDate: new Date().toISOString(),
+
+    backupDate:
+      new Date().toISOString(),
+
     orders: orders
+
   };
+
 
   const data =
     JSON.stringify(
@@ -2929,6 +2979,7 @@ function backupData(){
       null,
       2
     );
+
 
   const blob =
     new Blob(
@@ -2938,27 +2989,35 @@ function backupData(){
       }
     );
 
+
   const url =
     URL.createObjectURL(blob);
 
+
   const a =
     document.createElement("a");
+
 
   const date =
     new Date()
       .toISOString()
       .slice(0,10);
 
+
   a.href = url;
+
 
   a.download =
     "Vijay-Tailors-Backup-" +
     date +
     ".json";
 
+
   a.click();
 
+
   URL.revokeObjectURL(url);
+
 
   alert(
     "✅ Backup downloaded successfully!"
@@ -2976,9 +3035,11 @@ function restoreData(event){
   const file =
     event.target.files[0];
 
+
   if(!file){
     return;
   }
+
 
   const confirmed =
     confirm(
@@ -2989,6 +3050,7 @@ function restoreData(event){
       "Continue?"
     );
 
+
   if(!confirmed){
 
     event.target.value = "";
@@ -2997,8 +3059,10 @@ function restoreData(event){
 
   }
 
+
   const reader =
     new FileReader();
+
 
   reader.onload =
     function(e){
@@ -3009,6 +3073,7 @@ function restoreData(event){
           JSON.parse(
             e.target.result
           );
+
 
         if(
           !backup.orders ||
@@ -3023,14 +3088,19 @@ function restoreData(event){
 
         }
 
+
         orders =
           backup.orders;
 
+
         saveData();
+
 
         updateDashboard();
 
+
         displayOrders();
+
 
         alert(
           "✅ Backup restored successfully!\n\n" +
@@ -3038,11 +3108,13 @@ function restoreData(event){
           " orders restored."
         );
 
+
       }catch(error){
 
         alert(
           "❌ Could not read the backup file."
         );
+
 
         console.error(error);
 
@@ -3050,16 +3122,15 @@ function restoreData(event){
 
     };
 
+
   reader.readAsText(file);
+
 
   event.target.value = "";
 
-      }
-</script>
-  
-
-
-
+  }
+  </script>
 
 </body>
-  </html>
+
+</html>
