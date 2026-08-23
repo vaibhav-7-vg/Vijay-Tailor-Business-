@@ -1358,26 +1358,74 @@ function showMeasurements(id){
 /* =========================
    MARK READY
 ========================= */
-
 function markReady(id){
 
   const order =
-    orders.find(
-      order => order.id === id
-    );
-
+    orders.find(order => order.id === id);
 
   if(!order) return;
 
 
+  // Change order status
   order.status = "Ready";
 
 
+  // Save updated order
   saveData();
 
+  // Update dashboard
+  updateDashboard();
+
+  // Refresh order list
   displayOrders();
 
-  updateDashboard();
+
+  // Prepare WhatsApp ready notification
+  let message =
+    "🧵 *VIJAY TAILOR'S*%0A%0A";
+
+  message +=
+    "Hello " +
+    encodeURIComponent(order.name) +
+    ",%0A%0A";
+
+  message +=
+    "✅ *Your order is ready!*%0A%0A";
+
+  message +=
+    "Order ID: " +
+    encodeURIComponent(order.id) +
+    "%0A";
+
+  message +=
+    "Your clothes are ready for collection.%0A%0A";
+
+  message +=
+    "Please visit Vijay Tailor's to collect your order.%0A%0A";
+
+  message +=
+    "Thank you for choosing Vijay Tailor's! ❤️";
+
+
+  // Customer mobile number
+  let number =
+    order.mobile.replace(/\D/g,"");
+
+
+  if(number.length === 10){
+    number = "91" + number;
+  }
+
+
+  // Open WhatsApp
+  const url =
+    "https://wa.me/" +
+    number +
+    "?text=" +
+    message;
+
+
+  window.open(url,"_blank");
 
 }
 
