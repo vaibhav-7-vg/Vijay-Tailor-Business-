@@ -373,6 +373,83 @@ textarea{
 #languageSwitcher button:focus {
   outline: none;
 }
+  /* =========================
+   LOGIN SCREEN
+========================= */
+
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.login-box h1 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.login-box > p {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+}
+
+.login-box label {
+  display: block;
+  text-align: left;
+  margin: 10px 0 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-box input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.login-box input:focus {
+  border-color: #777;
+}
+
+.login-box button {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.login-box .forgot-btn {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #555;
+  font-size: 12px;
+  padding: 5px;
+  min-height: auto;
+}
+
+#loginMessage {
+  font-size: 13px;
+  margin-top: 10px;
+}
 </style>
 </head>
 
@@ -381,7 +458,50 @@ textarea{
   <button onclick="setLanguage('en')" id="englishBtn">🇬🇧 English</button>
   <button onclick="setLanguage('mr')" id="marathiBtn">🇮🇳 मराठी</button>
   </div>
+<!-- LOGIN SCREEN -->
 
+<div id="loginScreen" class="login-screen">
+
+  <div class="login-box">
+
+    <h1>🧵 VIJAY TAILOR'S</h1>
+    <p>Men's Specialist</p>
+
+    <h2>🔐 Login</h2>
+
+    <label>User ID</label>
+    <input
+      type="text"
+      id="loginId"
+      placeholder="Enter User ID"
+      autocomplete="username"
+    >
+
+    <label>Password</label>
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Enter Password"
+      autocomplete="current-password"
+    >
+
+    <button onclick="loginUser()">
+      🔐 LOGIN
+    </button>
+
+    <button
+      type="button"
+      class="forgot-btn"
+      onclick="showResetPassword()"
+    >
+      Forgot Password?
+    </button>
+
+    <p id="loginMessage"></p>
+
+  </div>
+
+</div>
 <div class="container">
 
 <!-- HEADER -->
