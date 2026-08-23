@@ -3542,6 +3542,79 @@ function applyLanguage() {
 document.addEventListener("DOMContentLoaded", function() {
   applyLanguage();
 });
+  /* =========================
+   PROJECT LOGIN SYSTEM
+========================= */
+
+const DEFAULT_LOGIN_ID = "VijayTailor";
+const DEFAULT_LOGIN_PASSWORD = "12345";
+
+function loginUser() {
+
+  const enteredId =
+    document.getElementById("loginId").value.trim();
+
+  const enteredPassword =
+    document.getElementById("loginPassword").value;
+
+  const savedId =
+    localStorage.getItem("vijayTailorLoginId") ||
+    DEFAULT_LOGIN_ID;
+
+  const savedPassword =
+    localStorage.getItem("vijayTailorPassword") ||
+    DEFAULT_LOGIN_PASSWORD;
+
+  const message =
+    document.getElementById("loginMessage");
+
+  if (
+    enteredId === savedId &&
+    enteredPassword === savedPassword
+  ) {
+
+    localStorage.setItem(
+      "vijayTailorLoggedIn",
+      "true"
+    );
+
+    document.getElementById("loginScreen")
+      .style.display = "none";
+
+    message.innerText = "";
+
+  } else {
+
+    message.innerText =
+      "❌ Invalid User ID or Password";
+
+    message.style.color = "red";
+  }
+}
+
+
+/* =========================
+   CHECK LOGIN WHEN WEBSITE OPENS
+========================= */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  const loggedIn =
+    localStorage.getItem("vijayTailorLoggedIn");
+
+  if (loggedIn === "true") {
+
+    document.getElementById("loginScreen")
+      .style.display = "none";
+
+  } else {
+
+    document.getElementById("loginScreen")
+      .style.display = "flex";
+
+  }
+
+});
   </script>
 
 </body>
