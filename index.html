@@ -373,6 +373,15 @@ textarea{
 <span>Total Sales</span>
 <strong>₹<span id="totalSales">0</span></strong>
 </div>
+  <div class="stat">
+<span>Total Cost</span>
+<strong>₹<span id="totalCost">0</span></strong>
+</div>
+
+<div class="stat">
+<span>🟢 Total Profit</span>
+<strong>₹<span id="totalProfit">0</span></strong>
+</div>
 
 <div class="stat">
 <span>Pending</span>
@@ -1024,17 +1033,28 @@ function saveOrder(){
 
 
   const total =
-    Number(
-      document.getElementById("totalAmount")
-        .innerText
-    );
+  Number(
+    document.getElementById("totalAmount")
+      .innerText
+  );
 
 
-  const advance =
-    Number(
-      document.getElementById("advance")
-        .value
-    ) || 0;
+const advance =
+  Number(
+    document.getElementById("advance")
+      .value
+  ) || 0;
+
+
+/* =========================
+   PROFIT CALCULATION
+========================= */
+
+let totalMaterialCost = 0;
+let totalKarigarCost = 0;
+let totalOtherCost = 0;
+let totalCost = 0;
+let totalProfit = 0;
 
 
   const remaining =
@@ -1065,25 +1085,54 @@ function saveOrder(){
 
     if(quantity > 0){
 
-      services.push({
+      const data = serviceData[item];
 
-        name:
-          serviceData[item].name,
+const serviceTotal =
+  quantity * data.price;
 
-        quantity:
-          quantity,
+const materialCost =
+  quantity * data.materialCost;
 
-        price:
-          serviceData[item].price,
+const karigarCost =
+  quantity * data.karigarCost;
 
-        total:
-          quantity *
-          serviceData[item].price,
+const otherCost =
+  quantity * data.otherCost;
 
-        measurements:
-          getMeasurements(item)
+const serviceCost =
+  materialCost +
+  karigarCost +
+  otherCost;
 
-      });
+const serviceProfit =
+  serviceTotal -
+  serviceCost;
+
+
+services.push({
+
+  name: data.name,
+
+  quantity: quantity,
+
+  price: data.price,
+
+  total: serviceTotal,
+
+  materialCost: materialCost,
+
+  karigarCost: karigarCost,
+
+  otherCost: otherCost,
+
+  totalCost: serviceCost,
+
+  profit: serviceProfit,
+
+  measurements:
+    getMeasurements(item)
+
+});
 
     }
 
@@ -1102,17 +1151,47 @@ function saveOrder(){
 
   const order = {
 
-    id: orderNumber,
+  id: orderNumber,
 
-    name: name,
+  name: name,
 
-    mobile: mobile,
+  mobile: mobile,
 
-    services: services,
+  services: services,
 
-    total: total,
+  total: total,
 
-    advance: advance,
+  materialCost: services.reduce(
+    (sum, service) =>
+      sum + (service.materialCost || 0),
+    0
+  ),
+
+  karigarCost: services.reduce(
+    (sum, service) =>
+      sum + (service.karigarCost || 0),
+    0
+  ),
+
+  otherCost: services.reduce(
+    (sum, service) =>
+      sum + (service.otherCost || 0),
+    0
+  ),
+
+  totalCost: services.reduce(
+    (sum, service) =>
+      sum + (service.totalCost || 0),
+    0
+  ),
+
+  profit: services.reduce(
+    (sum, service) =>
+      sum + (service.profit || 0),
+    0
+  ),
+
+  advance: advance,
 
     remaining: remaining,
 
@@ -2856,7 +2935,6 @@ function saveData(){
 /* =========================
    DASHBOARD
 ========================= */
-
 function updateDashboard(){
 
   document.getElementById(
@@ -2867,8 +2945,24 @@ function updateDashboard(){
 
   const sales =
     orders.reduce(
-      (total,order) =>
-        total + order.total,
+      (total, order) =>
+        total + Number(order.total || 0),
+      0
+    );
+
+
+  const totalCost =
+    orders.reduce(
+      (total, order) =>
+        total + Number(order.totalCost || 0),
+      0
+    );
+
+
+  const totalProfit =
+    orders.reduce(
+      (total, order) =>
+        total + Number(order.profit || 0),
       0
     );
 
@@ -2877,6 +2971,18 @@ function updateDashboard(){
     "totalSales"
   ).innerText =
     sales;
+
+
+  document.getElementById(
+    "totalCost"
+  ).innerText =
+    totalCost;
+
+
+  document.getElementById(
+    "totalProfit"
+  ).innerText =
+    totalProfit;
 
 
   document.getElementById(
