@@ -29,6 +29,7 @@ body{
   color:white;
   padding:28px 20px;
   border-radius:0 0 28px 28px;
+  position:relative;
 }
 
 .header h1{
@@ -338,16 +339,29 @@ textarea{
   }
 
   }
-  .settings-btn{
+.settings-btn{
+  position:absolute;
+  top:28px;
+  right:20px;
+
   width:48px;
   height:48px;
+
   padding:0;
-  margin:10px 0 0 auto;
-  display:block;
+  margin:0;
+
   border-radius:50%;
-  font-size:22px;
-  background:#64748b;
-  }
+  font-size:24px;
+
+  background:transparent;
+  color:white;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  box-shadow:none;
+}
 </style>
 </head>
 
