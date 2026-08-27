@@ -48,6 +48,7 @@ body{
   padding:20px;
   border-radius:20px;
   box-shadow:0 5px 18px #00000012;
+  position:relative;
 }
 
 .stats{
@@ -362,6 +363,33 @@ textarea{
 
   box-shadow:none;
 }
+  .page-back{
+  position:absolute;
+  top:14px;
+  left:14px;
+
+  width:42px;
+  height:42px;
+
+  margin:0;
+  padding:0;
+
+  border:none;
+  border-radius:50%;
+
+  background:transparent;
+  color:#172033;
+
+  font-size:32px;
+  font-weight:bold;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+  box-shadow:none;
+  }
 </style>
 </head>
 
@@ -451,8 +479,14 @@ textarea{
 
 <div id="newOrder" class="card hidden">
 
-<h2>📝 New Order</h2>
+<button
+  class="page-back"
+  onclick="openPage('dashboard')"
+  aria-label="Back">
+  ←
+</button>
 
+<h2>📝 New Order</h2>
 <label>👤 Customer Name</label>
 
 <input
@@ -737,9 +771,7 @@ placeholder="Collar style, sleeve, fitting, measurements, etc.">
 💾 SAVE ORDER / BILL
 </button>
 
-<button onclick="openPage('dashboard')">
-← BACK
-</button>
+
 
 </div>
   <!-- SETTINGS -->
@@ -788,8 +820,14 @@ placeholder="Collar style, sleeve, fitting, measurements, etc.">
 
 <div id="orders" class="card hidden">
 
-<h2>📋 Orders</h2>
+<button
+  class="page-back"
+  onclick="openPage('dashboard')"
+  aria-label="Back">
+  ←
+</button>
 
+<h2>📋 Orders</h2>
 <input
 id="search"
 placeholder="🔍 Search customer, mobile or order ID"
@@ -797,9 +835,7 @@ oninput="displayOrders()">
 
 <div id="orderList"></div>
 
-<button onclick="openPage('dashboard')">
-← BACK
-</button>
+
 
 </div>
 
