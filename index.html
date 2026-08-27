@@ -587,86 +587,9 @@ onclick="changeQty('pant',1)">
 </div>
 
 
-<!-- SCHOOL -->
-
-<div class="service">
-
-<div class="service-name">
-🏫 School Uniform
-</div>
-
-<div class="service-price">
-₹699 per set
-</div>
-
-<div class="qty-box">
-
-<button
-type="button"
-class="qty-btn"
-onclick="changeQty('school',-1)">
-−
-</button>
-
-<span
-id="schoolQty"
-class="qty-number">
-0
-</span>
-
-<button
-type="button"
-class="qty-btn"
-onclick="changeQty('school',1)">
-+
-</button>
-
-</div>
-
-<div id="schoolMeasurements"></div>
-
-</div>
 
 
-<!-- OFFICE -->
 
-<div class="service">
-
-<div class="service-name">
-🏢 Office Uniform
-</div>
-
-<div class="service-price">
-₹699 per set
-</div>
-
-<div class="qty-box">
-
-<button
-type="button"
-class="qty-btn"
-onclick="changeQty('office',-1)">
-−
-</button>
-
-<span
-id="officeQty"
-class="qty-number">
-0
-</span>
-
-<button
-type="button"
-class="qty-btn"
-onclick="changeQty('office',1)">
-+
-</button>
-
-</div>
-
-<div id="officeMeasurements"></div>
-
-</div>
 
 
 <!-- KURTA -->
@@ -674,7 +597,7 @@ onclick="changeQty('office',1)">
 <div class="service">
 
 <div class="service-name">
-🥻 Kurta Pajama
+👕 Kurta
 </div>
 
 <div class="service-price">
@@ -882,24 +805,10 @@ const serviceData = {
     otherCost: 20
   },
 
-  school: {
-    name: "School Uniform",
-    price: 699,
-    materialCost: 90,
-    karigarCost: 240,
-    otherCost: 40
-  },
-
-  office: {
-    name: "Office Uniform",
-    price: 699,
-    materialCost: 90,
-    karigarCost: 240,
-    otherCost: 40
-  },
+  
 
   kurta: {
-    name: "Kurta Pajama",
+    name: "Kurta",
     price: 699,
     materialCost: 90,
     karigarCost: 240,
@@ -910,8 +819,6 @@ const serviceData = {
 let quantities = {
   shirt: 0,
   pant: 0,
-  school: 0,
-  office: 0,
   kurta: 0
 };
 
