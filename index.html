@@ -1222,9 +1222,18 @@ services.push({
 
   orders.push(order);
 
+/* SAVE CUSTOMER PHOTOS */
+
+const photoInput =
+  document.getElementById("samplePhotos");
+
+saveOrderPhotos(
+  order.id,
+  photoInput.files
+)
+.then(() => {
 
   saveData();
-
 
   alert(
     "Order saved successfully!\n\n" +
@@ -1232,6 +1241,27 @@ services.push({
     orderNumber
   );
 
+  resetForm();
+
+  updateDashboard();
+
+  openPage("orders");
+
+})
+.catch(error => {
+
+  console.error(
+    "Photo saving error:",
+    error
+  );
+
+  /* Save order even if photo has a problem */
+
+  saveData();
+
+  alert(
+    "Order saved, but photo could not be saved."
+  );
 
   resetForm();
 
@@ -1239,6 +1269,9 @@ services.push({
 
   openPage("orders");
 
+});
+
+return;
 }
 
 
@@ -2917,6 +2950,129 @@ function sendWhatsApp(id){
   );
 
   }
+  /* =========================
+   PHOTO STORAGE - INDEXEDDB
+========================= */
+
+const photoDBRequest = indexedDB.open(
+  "VijayTailorPhotoDB",
+  1
+);
+
+photoDBRequest.onupgradeneeded = function(event){
+
+  const db = event.target.result;
+
+  if(!db.objectStoreNames.contains("photos")){
+
+    db.createObjectStore(
+      "photos",
+      { keyPath: "id" }
+    );
+
+  }
+
+};
+
+
+/* SAVE PHOTOS FOR ORDER */
+
+function saveOrderPhotos(orderId, files){
+
+  return new Promise((resolve,reject)=>{
+
+    if(!files || files.length === 0){
+
+      resolve();
+
+      return;
+
+    }
+
+    const request =
+      indexedDB.open(
+        "VijayTailorPhotoDB",
+        1
+      );
+
+    request.onsuccess = function(){
+
+      const db = request.result;
+
+      const transaction =
+        db.transaction(
+          "photos",
+          "readwrite"
+        );
+
+      const store =
+        transaction.objectStore(
+          "photos"
+        );
+
+
+      Array.from(files).forEach(
+        (file,index)=>{
+
+          store.put({
+
+            id:
+              orderId +
+              "_" +
+              index,
+
+            orderId:
+              orderId,
+
+            name:
+              file.name,
+
+            type:
+              file.type,
+
+            blob:
+              file
+
+          });
+
+        }
+      );
+
+
+      transaction.oncomplete =
+        function(){
+
+          db.close();
+
+          resolve();
+
+        };
+
+
+      transaction.onerror =
+        function(){
+
+          db.close();
+
+          reject(
+            transaction.error
+          );
+
+        };
+
+    };
+
+
+    request.onerror =
+      function(){
+
+        reject(request.error);
+
+      };
+
+  });
+
+}
   
   /* =========================
    SAVE DATA
