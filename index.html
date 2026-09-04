@@ -1329,7 +1329,82 @@ function resetForm(){
 
 }
 
+/* =========================
+   VIEW SAMPLE PHOTOS
+========================= */
 
+function viewSamplePhotos(orderId){
+
+  getOrderPhotos(orderId)
+    .then(photos => {
+
+      if(!photos || photos.length === 0){
+
+        alert("No sample photos saved for this order.");
+
+        return;
+      }
+
+      const win =
+        window.open("", "_blank");
+
+      win.document.write(`
+        <html>
+        <head>
+          <title>Sample Photos</title>
+
+          <style>
+            body{
+              font-family:Arial;
+              padding:20px;
+              text-align:center;
+            }
+
+            img{
+              max-width:100%;
+              margin:10px 0;
+              border-radius:10px;
+            }
+          </style>
+        </head>
+
+        <body>
+
+          <h2>📸 Customer Sample Photos</h2>
+
+          ${photos.map(photo => {
+
+            const url =
+              URL.createObjectURL(photo.blob);
+
+            return `
+              <img src="${url}">
+            `;
+
+          }).join("")}
+
+        </body>
+        </html>
+      `);
+
+      win.document.close();
+
+    })
+    .catch(error => {
+
+      console.error(
+        "Photo loading error:",
+        error
+      );
+
+      alert(
+        "Unable to load sample photos."
+      );
+
+    });
+
+}
+  
 /* =========================
    DISPLAY ORDERS
 ========================= */
@@ -1494,6 +1569,15 @@ function displayOrders(){
 </button>
 
 
+<!-- SAMPLE PHOTOS -->
+
+<button
+  class="blue"
+  onclick="viewSamplePhotos('${order.id}')">
+
+  📸 VIEW SAMPLE PHOTOS
+
+</button>
         <!-- EDIT ORDER -->
 
         <button
@@ -3062,6 +3146,75 @@ function saveOrderPhotos(orderId, files){
 
     };
 
+
+    request.onerror =
+      function(){
+
+        reject(request.error);
+
+      };
+
+  });
+
+}
+
+  /* =========================
+   GET SAVED PHOTOS
+========================= */
+
+function getOrderPhotos(orderId){
+
+  return new Promise((resolve, reject) => {
+
+    const request =
+      indexedDB.open(
+        "VijayTailorPhotoDB",
+        1
+      );
+
+    request.onsuccess = function(){
+
+      const db = request.result;
+
+      const transaction =
+        db.transaction(
+          "photos",
+          "readonly"
+        );
+
+      const store =
+        transaction.objectStore(
+          "photos"
+        );
+
+      const requestAll =
+        store.getAll();
+
+      requestAll.onsuccess =
+        function(){
+
+          const photos =
+            requestAll.result.filter(
+              photo =>
+                photo.orderId === orderId
+            );
+
+          db.close();
+
+          resolve(photos);
+
+        };
+
+      requestAll.onerror =
+        function(){
+
+          db.close();
+
+          reject(requestAll.error);
+
+        };
+
+    };
 
     request.onerror =
       function(){
